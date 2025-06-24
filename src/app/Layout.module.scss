@@ -1,0 +1,30 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+}
+
+.main {
+  flex: 1;
+}
+
+.footer {
+  padding: 16px 0;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  margin-top: 40px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  p {
+    margin: 0;
+    color: #888;
+    font-size: 14px;
+    text-align: center;
+  }
+}

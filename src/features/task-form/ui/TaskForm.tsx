@@ -1,6 +1,3 @@
-const TaskForm = () => {
-  return <form>Task Form</form>;
-};
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +28,7 @@ export const TaskForm = ({ initialData, mode, onCancel }: TaskFormProps) => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Task> }) => 
+    mutationFn: ({ id, data }: { id: string; data: Partial<Task> }) =>
       tasksApi.updateTask(id, data),
     onSuccess: () => {
       if (initialData?.id) {
@@ -114,17 +111,17 @@ export const TaskForm = ({ initialData, mode, onCancel }: TaskFormProps) => {
 
       <div className={styles.buttons}>
         {onCancel && (
-          <button 
-            type="button" 
-            className={styles.cancelButton} 
+          <button
+            type="button"
+            className={styles.cancelButton}
             onClick={onCancel}
             disabled={isSubmitting}
           >
             Отмена
           </button>
         )}
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className={styles.submitButton}
           disabled={isSubmitting}
         >
@@ -134,4 +131,3 @@ export const TaskForm = ({ initialData, mode, onCancel }: TaskFormProps) => {
     </form>
   );
 };
-export { TaskForm }; 
