@@ -22,17 +22,17 @@ export const TaskList = () => {
     status,
   } = useInfiniteQuery({
     queryKey: ['tasks'],
-    queryFn: ({ pageParam = 1 }) => tasksApi.getTasks(pageParam, PAGE_SIZE).then(res => res.data),
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) => tasksApi.getTasks(pageParam, PAGE_SIZE).then(res => res.data),
     getNextPageParam: (lastPage, allPages) =>
       lastPage.length === PAGE_SIZE ? allPages.length + 1 : undefined,
   });
 
-  if (status === 'loading') return <div>Загрузка...</div>;
+  if (status === 'pending') return <div>Загрузка...</div>;
   if (status === 'error') return <div>Ошибка загрузки</div>;
 
   const tasks = data?.pages.flat() ?? [];
 
-  // Простой бесконечный скролл (без виртуализации для простоты)
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollHeight - scrollTop === clientHeight && hasNextPage && !isFetchingNextPage) {
@@ -48,4 +48,4 @@ export const TaskList = () => {
       {isFetchingNextPage && <div>Загрузка ещё...</div>}
     </div>
   );
-}; 
+};
