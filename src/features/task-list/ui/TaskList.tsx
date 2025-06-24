@@ -1,4 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useRef } from 'react';
 import { tasksApi } from '../../../shared/api/tasksApi';
 import { TaskCard } from '../../../entities/task/ui/TaskCard';
 import styles from './TaskList.module.scss';
@@ -14,6 +16,8 @@ export const TaskSchema = z.object({
 });
 
 export const TaskList = () => {
+  const parentRef = useRef<HTMLDivElement>(null);
+
   const {
     data,
     fetchNextPage,
@@ -33,19 +37,59 @@ export const TaskList = () => {
 
   const tasks = data?.pages.flat() ?? [];
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    if (scrollHeight - scrollTop === clientHeight && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  };
+  const rowVirtualizer = useVirtualizer({
+    count: hasNextPage ? tasks.length + 1 : tasks.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 80, // Примерная высота каждой карточки задачи
+    overscan: 5,
+  });
+
+  // Загружаем следующую страницу, когда пользователь приближается к концу списка
+  const lastItemIndex = rowVirtualizer.range.endIndex;
+  if (
+    hasNextPage &&
+    !isFetchingNextPage &&
+    lastItemIndex >= tasks.length - 1
+  ) {
+    fetchNextPage();
+  }
 
   return (
-    <div className={styles.list} style={{ height: 400, overflow: 'auto' }} onScroll={handleScroll}>
-      {tasks.map(task => (
-        <TaskCard key={task.id} task={task} />
-      ))}
-      {isFetchingNextPage && <div>Загрузка ещё...</div>}
+    <div
+      ref={parentRef}
+      className={styles.list}
+      style={{ height: 500, overflow: 'auto' }}
+    >
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          const isLoaderRow = virtualRow.index >= tasks.length;
+          return (
+            <div
+              key={virtualRow.index}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: `${virtualRow.size}px`,
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            >
+              {isLoaderRow ? (
+                <div className={styles.loaderItem}>Загрузка ещё...</div>
+              ) : (
+                <TaskCard task={tasks[virtualRow.index]} />
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
