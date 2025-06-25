@@ -1,54 +1,76 @@
-# React + TypeScript + Vite
+# Приложение для управления задачами (Task App)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение для управления задачами, разработанное с использованием React, Tanstack Query, React Router DOM 6, SASS, zod, Typescript и FSD-архитектуры.
+Приложение позволяет просматривать, создавать, редактировать и удалять задачи.
 
-Currently, two official plugins are available:
+## Функциональность
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Просмотр списка задач с виртуализацией прокрутки
+- Постраничная загрузка задач с бесконечной прокруткой
+- Создание новых задач
+- Просмотр детальной информации о задаче
+- Редактирование существующих задач
+- Удаление задач
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Технологический стек
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Frontend:**
+  - React 19.1.0
+  - TypeScript 5.8.3
+  - React Router DOM 6.30.1
+  - Tanstack React Query 5.81.2
+  - Tanstack React Virtual 3.13.11
+  - Axios 1.10.0
+  - Zod 3.25.67
+  - SASS/SCSS 1.89.2
+
+- **Сборка и разработка:**
+  - Vite 6.3.5
+  - ESLint 9.25.0
+  - TypeScript ESLint 8.30.1
+
+## Архитектура проекта
+
+Проект организован по принципам Feature-Sliced Design (FSD) с четким разделением на слои:
+
+- **app** - конфигурация приложения, роутинг, глобальные стили
+- **pages** - компоненты страниц
+- **widgets** - составные компоненты, интегрирующие сущности и фичи
+- **features** - пользовательские сценарии, бизнес-логика
+- **entities** - бизнес-сущности
+- **shared** - переиспользуемые ресурсы и инфраструктура
+
+## Установка и запуск
+
+### Предварительные требования
+
+- Node.js (версия 18 или выше)
+- npm (включен в Node.js)
+
+### Установка зависимостей
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Запуск в режиме разработки
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+Приложение будет доступно по адресу: `http://localhost:5173`
+
+### Сборка для продакшн
+
+```bash
+npm run build
+```
+
+### Предпросмотр продакшн-сборки
+
+```bash
+npm run preview
+```
+
+
