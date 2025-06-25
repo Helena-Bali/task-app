@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { tasksApi } from '../../../shared/api/tasksApi';
 import { TaskCard } from '../../../entities/task/ui/TaskCard';
 import styles from './TaskList.module.scss';
@@ -37,23 +37,29 @@ export const TaskList = () => {
   const rowVirtualizer = useVirtualizer({
     count: hasNextPage ? tasks.length + 1 : tasks.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 80,
+    estimateSize: () => 150,
     overscan: 5,
   });
+
+  const range = rowVirtualizer.range;
+
+  useEffect(() => {
+    if (
+        range &&
+        hasNextPage &&
+        !isFetchingNextPage &&
+        range.endIndex >= tasks.length - 1
+    ) {
+      fetchNextPage().catch(error => {
+        console.error('Ошибка при загрузке следующей страницы:', error);
+      });
+    }
+  }, [range, hasNextPage, isFetchingNextPage, tasks.length, range?.endIndex, fetchNextPage]);
+
 
   if (status === 'pending') return <div>Загрузка...</div>;
   if (status === 'error') return <div>Ошибка загрузки</div>;
 
-
-  const range = rowVirtualizer.range;
-  if (
-    range &&
-    hasNextPage &&
-    !isFetchingNextPage &&
-    range.endIndex >= tasks.length - 1
-  ) {
-    fetchNextPage();
-  }
 
   return (
     <div
