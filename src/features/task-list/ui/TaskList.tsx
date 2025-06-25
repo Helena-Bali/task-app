@@ -32,24 +32,25 @@ export const TaskList = () => {
       lastPage.length === PAGE_SIZE ? allPages.length + 1 : undefined,
   });
 
-  if (status === 'pending') return <div>Загрузка...</div>;
-  if (status === 'error') return <div>Ошибка загрузки</div>;
-
   const tasks = data?.pages.flat() ?? [];
 
   const rowVirtualizer = useVirtualizer({
     count: hasNextPage ? tasks.length + 1 : tasks.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 80, // Примерная высота каждой карточки задачи
+    estimateSize: () => 80,
     overscan: 5,
   });
 
-  // Загружаем следующую страницу, когда пользователь приближается к концу списка
-  const lastItemIndex = rowVirtualizer.range.endIndex;
+  if (status === 'pending') return <div>Загрузка...</div>;
+  if (status === 'error') return <div>Ошибка загрузки</div>;
+
+
+  const range = rowVirtualizer.range;
   if (
+    range &&
     hasNextPage &&
     !isFetchingNextPage &&
-    lastItemIndex >= tasks.length - 1
+    range.endIndex >= tasks.length - 1
   ) {
     fetchNextPage();
   }
