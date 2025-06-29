@@ -16,7 +16,7 @@ export const TaskDetail = () => {
     navigate(-1);
   };
 
-  if (status === 'pending') return <div>Загрузка...</div>;
+  if (status === 'pending') return <div>Загрузка....</div>;
   if (status === 'error') return <div>Ошибка загрузки</div>;
   if (!task) return <div>Задача не найдена</div>;
 
